@@ -7,10 +7,13 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80' style='font-weight:bold;font-family:monospace;color:%23333;'>K</text></svg>" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+    
     <style>
+        /* ===== ALL EXISTING STYLES REMAIN ===== */
         * {
             margin: 0;
             padding: 0;
@@ -28,6 +31,115 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
+        /* ===== CREATIVE SECTION INDICATOR ===== */
+        .section-indicator {
+            position: fixed;
+            right: 2.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 99;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.2rem;
+            pointer-events: none;
+        }
+
+        .section-indicator .dot-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            pointer-events: auto;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .section-indicator .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.12);
+            border: 2px solid transparent;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+        }
+
+        .section-indicator .dot.active {
+            background: #1a1a1a;
+            transform: scale(1.3);
+            border-color: #1a1a1a;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-indicator .dot-wrapper:hover .dot:not(.active) {
+            background: rgba(0, 0, 0, 0.25);
+            transform: scale(1.15);
+        }
+
+        .section-indicator .dot-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5rem;
+            color: rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateX(-8px);
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            white-space: nowrap;
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%) translateX(-8px);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.15rem 0.8rem;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            pointer-events: none;
+        }
+
+        .section-indicator .dot-wrapper:hover .dot-label {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+        }
+
+        .section-indicator .dot-wrapper.active .dot-label {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+            color: #1a1a1a;
+        }
+
+        /* Progress line */
+        .section-indicator .progress-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 2px;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.04);
+            border-radius: 2px;
+            z-index: -1;
+        }
+
+        .section-indicator .progress-line .fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 0%;
+            background: #1a1a1a;
+            border-radius: 2px;
+            transition: height 0.3s ease;
+        }
+
+        /* ===== SECTION-SPECIFIC ANIMATIONS ===== */
+        /* (all existing section animations remain) */
+
+        /* ===== REST OF EXISTING CSS ===== */
         .bg-grid {
             position: fixed;
             inset: 0;
@@ -65,6 +177,7 @@
             pointer-events: none;
             user-select: none;
             opacity: 0.4;
+            transition: opacity 1s ease;
         }
         .bg-bracket-2 {
             right: 8%;
@@ -77,6 +190,7 @@
             pointer-events: none;
             user-select: none;
             opacity: 0.4;
+            transition: opacity 1s ease;
         }
 
         .container {
@@ -85,6 +199,142 @@
             padding: 0 2rem;
             position: relative;
             z-index: 2;
+        }
+
+        /* ===== SECTION-SPECIFIC ANIMATIONS ===== */
+        #hero .reveal {
+            opacity: 0;
+            transform: translateY(50px) scale(0.98);
+            transition: opacity 1s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        #hero .reveal.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        #profile .reveal {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 1.2s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 1.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        #profile .reveal.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        #profile .profile-card {
+            transition: box-shadow 0.6s ease, transform 0.6s ease;
+        }
+        #profile .profile-card:hover {
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.04);
+            transform: translateY(-3px);
+        }
+
+        #background .reveal-left {
+            opacity: 0;
+            transform: translateX(-60px) rotate(-1deg);
+            transition: opacity 0.9s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        #background .reveal-left.visible {
+            opacity: 1;
+            transform: translateX(0) rotate(0deg);
+        }
+        #background .reveal-right {
+            opacity: 0;
+            transform: translateX(60px) rotate(1deg);
+            transition: opacity 0.9s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        #background .reveal-right.visible {
+            opacity: 1;
+            transform: translateX(0) rotate(0deg);
+        }
+        #background .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 1s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        #background .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #experience .exp-card {
+            opacity: 0;
+            transform: perspective(800px) rotateX(8deg) translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+                box-shadow 0.4s ease, transform 0.4s ease;
+        }
+        #experience .exp-card.visible {
+            opacity: 1;
+            transform: perspective(800px) rotateX(0deg) translateY(0);
+        }
+        #experience .exp-card:hover {
+            transform: perspective(800px) rotateX(0deg) translateY(-6px) scale(1.01);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.04);
+        }
+
+        #projects .project-card {
+            opacity: 0;
+            transform: translateY(40px) scale(0.97);
+            transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 0.8s cubic-bezier(0.23, 1, 0.32, 1),
+                box-shadow 0.4s ease, transform 0.4s ease;
+        }
+        #projects .project-card.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        #projects .project-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 56px rgba(0, 0, 0, 0.04);
+        }
+
+        #skills .skill-tag {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+                background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+        }
+        #skills .skill-tag.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        #skills .skill-tag:hover {
+            transform: scale(1.08) translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+        }
+
+        #education .info-card {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.9s cubic-bezier(0.34, 1.56, 0.64, 1),
+                transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1),
+                box-shadow 0.3s ease, transform 0.3s ease;
+        }
+        #education .info-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        #education .info-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.03);
+        }
+
+        #contact .reveal {
+            opacity: 0;
+            transform: scale(0.95);
+            transition: opacity 1s cubic-bezier(0.23, 1, 0.32, 1),
+                transform 1s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        #contact .reveal.visible {
+            opacity: 1;
+            transform: scale(1);
         }
 
         .reveal {
@@ -545,14 +795,8 @@
             border-radius: 8px;
             padding: 1.5rem 1.8rem;
             border: 1px solid rgba(0, 0, 0, 0.06);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             cursor: default;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
-        }
-        .exp-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(0, 0, 0, 0.08);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.03);
         }
         .exp-card .card-header {
             display: flex;
@@ -640,18 +884,9 @@
             font-size: 0.75rem;
             border: 1px solid rgba(0, 0, 0, 0.06);
             color: #555555;
-            transition: all 0.3s;
             cursor: default;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.01);
         }
-        .skill-tag:hover {
-            background: rgba(0, 0, 0, 0.02);
-            border-color: rgba(0, 0, 0, 0.08);
-            transform: translateY(-3px);
-            color: #1a1a1a;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
-        }
-
         .skill-tag .skill-icon {
             font-size: 1.2rem;
             line-height: 1;
@@ -684,12 +919,8 @@
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid rgba(0, 0, 0, 0.06);
-            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.01);
-        }
-        .project-card:hover {
-            border-color: rgba(0, 0, 0, 0.08);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.03);
+            cursor: default;
         }
 
         .project-card .project-header {
@@ -1342,6 +1573,17 @@
             .diversity-grid {
                 grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             }
+            .section-indicator {
+                right: 1rem;
+                gap: 0.8rem;
+            }
+            .section-indicator .dot {
+                width: 8px;
+                height: 8px;
+            }
+            .section-indicator .dot-label {
+                display: none;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1490,6 +1732,18 @@
                 font-size: 0.7rem;
                 padding: 0.4rem 1.2rem;
             }
+
+            .section-indicator {
+                right: 0.8rem;
+                gap: 0.6rem;
+            }
+            .section-indicator .dot {
+                width: 7px;
+                height: 7px;
+            }
+            .section-indicator .dot-label {
+                display: none;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1579,6 +1833,19 @@
                 top: 1rem;
                 right: 1rem;
             }
+
+            .section-indicator {
+                right: 0.5rem;
+                gap: 0.5rem;
+            }
+            .section-indicator .dot {
+                width: 6px;
+                height: 6px;
+                border-width: 1.5px;
+            }
+            .section-indicator .dot-label {
+                display: none;
+            }
         }
 
         @media (max-width: 360px) {
@@ -1618,7 +1885,42 @@
     <div class="bg-bracket">{</div>
     <div class="bg-bracket-2">}</div>
 
-    <!-- ===== TOAST CONTAINER ===== -->
+    <!-- ===== CREATIVE SECTION INDICATOR ===== -->
+    <nav class="section-indicator" id="sectionIndicator" aria-label="Section navigation">
+        <div class="progress-line">
+            <div class="fill" id="progressFill"></div>
+        </div>
+        
+        <div class="dot-wrapper active" data-section="hero">
+            <div class="dot active"></div>
+            <span class="dot-label">Home</span>
+        </div>
+        <div class="dot-wrapper" data-section="profile">
+            <div class="dot"></div>
+            <span class="dot-label">Profile</span>
+        </div>
+        <div class="dot-wrapper" data-section="background">
+            <div class="dot"></div>
+            <span class="dot-label">Background</span>
+        </div>
+        <div class="dot-wrapper" data-section="experience">
+            <div class="dot"></div>
+            <span class="dot-label">Experience</span>
+        </div>
+        <div class="dot-wrapper" data-section="projects">
+            <div class="dot"></div>
+            <span class="dot-label">Projects</span>
+        </div>
+        <div class="dot-wrapper" data-section="skills">
+            <div class="dot"></div>
+            <span class="dot-label">Skills</span>
+        </div>
+        <div class="dot-wrapper" data-section="education">
+            <div class="dot"></div>
+            <span class="dot-label">Contact</span>
+        </div>
+    </nav>
+
     <div class="toast-container" id="toastContainer"></div>
 
     <header>
@@ -1637,7 +1939,7 @@
     </header>
 
     <main>
-        <!-- All content sections remain the same -->
+        <!-- ===== ALL CONTENT REMAINS THE SAME ===== -->
         <div class="container">
 
             <!-- HERO -->
@@ -1785,7 +2087,7 @@
                     <a href="#" class="section-link">full history</a>
                 </div>
                 <div class="exp-grid">
-                    <div class="exp-card reveal-left delay-1">
+                    <div class="exp-card delay-1">
                         <div class="card-header">
                             <div>
                                 <div class="role-badge">freelance</div>
@@ -1801,7 +2103,7 @@
                         </ul>
                     </div>
 
-                    <div class="exp-card reveal delay-2">
+                    <div class="exp-card delay-2">
                         <div class="card-header">
                             <div>
                                 <div class="role-badge">freelance</div>
@@ -1817,7 +2119,7 @@
                         </ul>
                     </div>
 
-                    <div class="exp-card reveal-right delay-3">
+                    <div class="exp-card delay-3">
                         <div class="card-header">
                             <div>
                                 <div class="role-badge">freelance</div>
@@ -1834,7 +2136,7 @@
                         </ul>
                     </div>
 
-                    <div class="exp-card reveal-left delay-4">
+                    <div class="exp-card delay-4">
                         <div class="card-header">
                             <div>
                                 <div class="role-badge">full-time</div>
@@ -1850,7 +2152,7 @@
                         </ul>
                     </div>
 
-                    <div class="exp-card reveal-right delay-5">
+                    <div class="exp-card delay-5">
                         <div class="card-header">
                             <div>
                                 <div class="role-badge">full-time</div>
@@ -1866,7 +2168,7 @@
                         </ul>
                     </div>
 
-                    <div class="exp-card reveal-left delay-6">
+                    <div class="exp-card delay-1">
                         <div class="card-header">
                             <div>
                                 <div class="role-badge">full-time</div>
@@ -1896,7 +2198,7 @@
 
                 <div class="projects-grid">
                     <!-- Project 1: Financial Obligation and Disbursement System -->
-                    <div class="project-card reveal-left delay-1">
+                    <div class="project-card">
                         <div class="project-header">
                             <h3>Financial Obligation and Disbursement System</h3>
                             <span class="client">DOST-FNRI</span>
@@ -1930,7 +2232,7 @@
                     </div>
 
                     <!-- Project 2: FNRI EA Online Voting System -->
-                    <div class="project-card reveal delay-2">
+                    <div class="project-card">
                         <div class="project-header">
                             <h3>FNRI EA Online Voting System</h3>
                             <span class="client">DOST-FNRI</span>
@@ -1973,7 +2275,7 @@
                     </div>
 
                     <!-- Project 3: Loan Management System -->
-                    <div class="project-card reveal-left delay-3">
+                    <div class="project-card">
                         <div class="project-header">
                             <h3>Loan Management System</h3>
                             <span class="client">Science Savings and Loan Association Inc.</span>
@@ -2016,7 +2318,7 @@
                     </div>
 
                     <!-- Project 4: Gym Management System -->
-                    <div class="project-card reveal delay-4">
+                    <div class="project-card">
                         <div class="project-header">
                             <h3>Gym Management System</h3>
                             <span class="client">Mjeshter Fitness Gym</span>
@@ -2062,7 +2364,7 @@
                     </div>
 
                     <!-- Project 5: Shooting Range Management System -->
-                    <div class="project-card reveal-left delay-1">
+                    <div class="project-card">
                         <div class="project-header">
                             <h3>Shooting Range Management System</h3>
                             <span class="client">Quezon City Police District</span>
@@ -2108,7 +2410,7 @@
                     </div>
 
                     <!-- Project 6: Fleet Management System -->
-                    <div class="project-card reveal delay-2">
+                    <div class="project-card">
                         <div class="project-header">
                             <h3>Fleet Management System</h3>
                             <span class="client">Larga International Logistics Inc.</span>
@@ -2225,7 +2527,7 @@
                     </h2>
                 </div>
                 <div class="info-grid">
-                    <div class="info-card reveal-left delay-1">
+                    <div class="info-card">
                         <h4><i class="fas fa-certificate"></i> Certifications</h4>
                         <ul>
                             <li><i class="fas fa-circle"></i> Introduction to Large Language Models (LLMs) and Generative AI, Text2SQL, Retrieval Augmented Generation (RAG) and advanced techniques, Exploratory Data Analysis, Data Architectures, and Agentic AI.</li>
@@ -2241,7 +2543,7 @@
                         </ul>
                     </div>
 
-                    <div class="info-card reveal delay-2">
+                    <div class="info-card">
                         <h4><i class="fas fa-graduation-cap"></i> Education</h4>
                         <div class="edu-item">
                             <div class="school">STI College Caloocan</div>
@@ -2255,7 +2557,7 @@
                         </div>
                     </div>
 
-                    <div class="info-card reveal-right delay-3">
+                    <div class="info-card">
                         <h4><i class="fas fa-address-card"></i> Contact</h4>
                         <ul>
                             <li><i class="fas fa-phone" style="color: #444444; width: 1.2rem;"></i> 09205978521</li>
@@ -2341,7 +2643,7 @@
     </div>
 
     <script>
-        // ========== TOAST NOTIFICATION SYSTEM ==========
+        // ===== TOAST =====
         function showToast(title, message, type = 'success', duration = 5000) {
             const container = document.getElementById('toastContainer');
 
@@ -2410,7 +2712,7 @@
             return toast;
         }
 
-        // ========== DEMO MODAL ==========
+        // ===== DEMO MODAL =====
         let currentDemoProject = '';
 
         function openDemoModal(projectName, client) {
@@ -2460,7 +2762,7 @@
             if (e.target === e.currentTarget) closeDemoModal();
         });
 
-        // ========== LIGHTBOX ==========
+        // ===== LIGHTBOX =====
         let lightboxImages = [];
         let currentLightboxIndex = 0;
 
@@ -2540,9 +2842,69 @@
             if (e.target === e.currentTarget) closeLightbox();
         });
 
-        // ========== INTERSECTION OBSERVER ==========
+        // ===== SECTION INDICATOR =====
+        const sections = document.querySelectorAll('section[id]');
+        const dotWrappers = document.querySelectorAll('.dot-wrapper');
+        const progressFill = document.getElementById('progressFill');
+
+        function updateSectionIndicator() {
+            const scrollPosition = window.scrollY + window.innerHeight / 2;
+            let currentSection = 'hero';
+            let currentIndex = 0;
+
+            sections.forEach((section, index) => {
+                const sectionTop = section.offsetTop;
+                const sectionBottom = sectionTop + section.offsetHeight;
+                if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                    currentSection = section.id;
+                    currentIndex = index;
+                }
+            });
+
+            // Update dots
+            dotWrappers.forEach((wrapper, index) => {
+                const dot = wrapper.querySelector('.dot');
+                if (index === currentIndex) {
+                    wrapper.classList.add('active');
+                    dot.classList.add('active');
+                } else {
+                    wrapper.classList.remove('active');
+                    dot.classList.remove('active');
+                }
+            });
+
+            // Update progress line
+            const totalSections = sections.length;
+            const progress = ((currentIndex) / (totalSections - 1)) * 100;
+            progressFill.style.height = progress + '%';
+        }
+
+        // Click on dot to scroll to section
+        dotWrappers.forEach((wrapper) => {
+            wrapper.addEventListener('click', function() {
+                const sectionId = this.dataset.section;
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    const headerHeight = document.querySelector('header').offsetHeight;
+                    const targetPosition = targetSection.offsetTop - headerHeight - 20;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Update on scroll
+        window.addEventListener('scroll', updateSectionIndicator);
+        window.addEventListener('resize', updateSectionIndicator);
+        // Initial update
+        setTimeout(updateSectionIndicator, 100);
+
+        // ===== SECTION OBSERVER =====
         (function() {
-            const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+            const elements = document.querySelectorAll('.exp-card, .project-card, .skill-tag, .info-card');
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -2553,11 +2915,26 @@
                 threshold: 0.08,
                 rootMargin: '0px 0px -30px 0px'
             });
-            reveals.forEach(el => observer.observe(el));
+
+            elements.forEach(el => observer.observe(el));
+
+            const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, {
+                threshold: 0.08,
+                rootMargin: '0px 0px -30px 0px'
+            });
+
+            reveals.forEach(el => revealObserver.observe(el));
             document.querySelector('#hero .reveal')?.classList.add('visible');
         })();
 
-        // ========== NAVIGATION SCROLL ==========
+        // ===== NAVIGATION SCROLL =====
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -2565,8 +2942,7 @@
                 const targetSection = document.querySelector(targetId);
                 if (targetSection) {
                     const headerHeight = document.querySelector('header').offsetHeight;
-                    const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - headerHeight -
-                        20;
+                    const targetPosition = targetSection.offsetTop - headerHeight - 20;
                     window.scrollTo({
                         top: targetPosition,
                         behavior: 'smooth'
@@ -2577,10 +2953,7 @@
             });
         });
 
-        // ========== UPDATE ACTIVE LINK ON SCROLL ==========
-        const sections = document.querySelectorAll('section[id]');
         const navLinks = document.querySelectorAll('.nav-links a');
-
         window.addEventListener('scroll', () => {
             let current = '';
             const headerHeight = document.querySelector('header').offsetHeight;
